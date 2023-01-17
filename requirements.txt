@@ -1,0 +1,5 @@
+cloudmesh-common
+eel
+humanize
+streamlit
+watchdog
