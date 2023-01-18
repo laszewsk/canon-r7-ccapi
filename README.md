@@ -25,6 +25,18 @@ Make suer your camera is compatible
 
 ... more will be added here
 
+## Install
+
+```bash
+$ git clone https://github.com/laszewsk/canon-r7-ccapi.git
+$ cd canon-r7-ccapi
+$ pip install -r requirements.txt
+$ export CANON_IP=<Your canon camera ip address>
+$ make
+```
+
+Thos will install and run the program using a GUI.
+
 ## Plan
 
 * manual
