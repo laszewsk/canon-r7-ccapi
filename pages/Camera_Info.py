@@ -83,3 +83,9 @@ st.markdown(Printer.write(b,
                           output="github"))
 level = b[0]["level"]
 st.sidebar.metric(label="Battery", value =f"{level} % charged")
+
+temp = camera.get_temperature()["status"]
+st.sidebar.metric(label="Temperature", value=f"{temp}")
+
+dt = camera.get_datetime()["datetime"]
+st.sidebar.write(f"{dt}")

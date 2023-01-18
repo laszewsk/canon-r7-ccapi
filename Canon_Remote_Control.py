@@ -61,7 +61,9 @@ def preview():
 
 def stack():
     print ("stack")
-
+    camera = CCAPI()
+    device = camera.get_deviceinformation()
+    camera.shoot(af=False)
 
 def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview):
     value = settings[version][key]["value"]
@@ -97,6 +99,7 @@ def save():
                          ("aeb", "ver110"),
                          ("flash", "ver110"),
                          ("shuttermode", "ver100"),
+                         # ("exposure", "ver100"),
                          ("focusbracketing", "ver110"),
                          ("focusbracketing_numberofshots", "ver110"),
                          ("focusbracketing_focusincrement", "ver110")]:
@@ -110,10 +113,10 @@ def save():
 
 st.sidebar.markdown("# Shoot")
 
-st.sidebar.button("Save", on_click=save)
+st.sidebar.button("Save Parameters to :camera:", on_click=save)
 
-st.sidebar.button(":camera: Preview", on_click=preview)
-st.sidebar.button(":camera: ... :camera: Stack", on_click=stack)
+st.sidebar.button("Preview Image from :camera:", on_click=preview)
+st.sidebar.button("Create Stack :camera: ... :camera:", on_click=stack)
 
 st.sidebar.markdown("# Focusbracketing")
 for label, key, version in [("Focusbracketing", "focusbracketing", "ver110")]:
@@ -133,6 +136,8 @@ for key, version in [("iso", "ver110"),
                      ("aeb", "ver110"),
                      ("flash", "ver110"),
                      ("shuttermode", "ver100"),
-                     ("afmethod", "ver110")]:
+                     ("afmethod", "ver110"),
+                     # ("exposure", "ver100")
+                     ]:
     values[key] = generate_selectbox(label=key, key=key, version=version)
 st.session_state.camera_values = values

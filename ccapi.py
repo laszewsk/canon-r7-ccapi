@@ -21,11 +21,13 @@ class CCAPI:
 
     #
     # http://<IP>:8080/ccapi
-    # /ver100/deviceinformation
-    # /ver100/devicestatus/temperature
-    # /ver100/devicestatus/battery
-    # /ver110/devicestatus/batterylist # gives more detailed infrmation
-    # /ver100/devicestatus/lens
+    # /ver100/functions/beep
+    # /ver100/functions/displayoff
+    # /ver100/functions/autopoweroff
+    # /ver100/functions/sensorcleaning  # button under lens
+    # metering
+    # drive
+
 
     def __init__(self, ip=None, port=8080):
         if ip is None and os.environ["CANON_IP"]:
@@ -33,8 +35,21 @@ class CCAPI:
         self.ip = ip
         self.port = port
 
+    # def get_thumb(self, location):
+    #     #     # /ver100/functions/autopoweroff
+    #     r = self._get(path="{location}?kind=thumb").json()
+    #     return r
+
     def get_deviceinformation(self):
         r = self._get(path="/ccapi/ver100/deviceinformation").json()
+        return r
+
+    def get_temperature(self):
+        r = self._get(path="/ccapi/ver100/devicestatus/temperature").json()
+        return r
+
+    def get_datetime(self):
+        r = self._get(path="/ccapi/ver100/functions/datetime").json()
         return r
 
     @property
@@ -119,6 +134,11 @@ class CCAPI:
                                   order=["version", "path", "get", "put", "post", "delete"],
                                   output=output)
         return r
+
+    def get_lens(self):
+        r = self._get(path="/ccapi/ver100/devicestatus/lens").json()
+        return r
+
 
     def get_storage(self):
         r = self._get(path="/ccapi/ver110/devicestatus/storage").json()["storagelist"]
@@ -286,6 +306,43 @@ class CCAPI:
         elif os_is_linux():
             os.system(f"open {name}")
 
+    def get_zoom(self):
+        # only supported for PowerSHot cameras
+        r = self._get(path="/ccapi/ver100/shooting/control/zoom")
+        return r
+
+
+    def get_shootingmodedial(self):
+        # only supported for PowerSHot cameras
+        r = self._get(path="/ccapi/ver100/shooting/settings/shootingmodedial").json()["value"]
+        return r
+
+    def autofocus(self, on):
+        action = self._get_bool(on)
+        if action:
+            action = "start"
+        else:
+            action = "stop"
+        r = self._post(path="/ccapi/ver100/shooting/control/af",
+                       json={
+                           "action": action
+                       })
+        return r
+
+    def flickerdetection(self, on):
+        action = self._get_bool(on)
+        if action:
+            action = "start"
+        else:
+            action = "stop"
+        r = self._post(path="/ccapi/ver100/shooting/control/flickerdetection",
+                       json={
+                           "action": action
+                       })
+        return r
+
+
+
     def shoot(self, af=True):
         af = self._get_bool(af)
         r = self._post(path="/ccapi/ver100/shooting/control/shutterbutton",
@@ -293,6 +350,7 @@ class CCAPI:
                            "af": af
                        })
         return r
+
 
     def shoot_control(self, af=True, action="full_press"):
         af = self._get_bool(af)
