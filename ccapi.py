@@ -1,10 +1,14 @@
+import json
 import os
 import shutil
 import sys
-
+from cloudmesh.common.systeminfo import os_is_linux, os_is_mac
 import humanize
 import requests
-from cloudmesh.common.Printer import Printer
+import streamlit
+
+#from cloudmesh.common.Printer import Printer
+from cloudmesh.common.Tabulate import Printer
 
 # def get
 #  r = requests.get('https://httpbin.org/basic-auth/user/pass')
@@ -23,9 +27,15 @@ class CCAPI:
     # /ver110/devicestatus/batterylist # gives more detailed infrmation
     # /ver100/devicestatus/lens
 
-    def __init__(self, ip, port=8080):
+    def __init__(self, ip=None, port=8080):
+        if ip is None and os.environ["CANON_IP"]:
+            ip = os.environ["CANON_IP"]
         self.ip = ip
         self.port = port
+
+    def get_deviceinformation(self):
+        r = self._get(path="/ccapi/ver100/deviceinformation").json()
+        return r
 
     @property
     def copyright(self):
@@ -110,7 +120,7 @@ class CCAPI:
                                   output=output)
         return r
 
-    def get_storage(self, output="table"):
+    def get_storage(self):
         r = self._get(path="/ccapi/ver110/devicestatus/storage").json()["storagelist"]
         for entry in r:
             entry["maxsize"] = humanize.naturalsize(entry["maxsize"])
@@ -118,17 +128,11 @@ class CCAPI:
             entry["name"] = entry["name"].replace("card", "Card ")
             # entry["path"] = os.path.basename(entry["path"])
             #    .replace("card", "Card ")
-        r = Printer.write(r,
-                          max_width=128,
-                          order=["name", "maxsize", "spacesize", "contentsnumber", "accesscapability"],
-                          header=["Name", "Total", "Free", "Images", "Accesscapability"],
-                          output=output)
-
         return r
 
     @property
     def charge(self):
-        b = self.get_battery(output=None)["level"]
+        b = self.get_battery(output="json")["level"]
         return b
 
     def get_battery(self, output="table"):
@@ -139,6 +143,7 @@ class CCAPI:
 
         # The ver100 call needs to be done first to get accurate level information
         no_percent = self._get(path="/ccapi/ver100/devicestatus/battery")
+        print ("BBBB", no_percent.json())
         result = self._get(path="/ccapi/ver110/devicestatus/batterylist")
         r = result.json()["batterylist"][0]
         if output in ["json", None]:
@@ -148,12 +153,16 @@ class CCAPI:
         return r
 
     def get_settings(self):
-        a = self._get(path="/ccapi/ver110/shooting/settings").json()
-        b = self._get(path="/ccapi/ver100/shooting/settings").json()
-        c = a.update(b)
-        # r = result.json()["batterylist"][0]
-        # r = Printer.attribute(r, output=output)
-        return [a, b]
+        if os.path.exists("settings.json"):
+            with open("settings.json", "r") as file:
+                c = json.load(file)
+        else:
+            c = {}
+            c["ver100"] = self._get(path="/ccapi/ver110/shooting/settings").json()
+            c["ver110"] = self._get(path="/ccapi/ver100/shooting/settings").json()
+            with open("settings.json", "w") as file:
+                json.dump(c, indent=4, fp=file)
+        return c
 
     def contents(self):
 
@@ -195,7 +204,6 @@ class CCAPI:
     @numberofshots.setter
     def numberofshots(self, n):
         ability = self.get_numberofshots()["ability"]
-        print("AAA", ability)
         if ability["min"] <= n <= ability["max"]:
             r = self._put(path="/ccapi/ver100/shooting/settings/focusbracketing/numberofshots",
                           json={"value": n})
@@ -213,7 +221,6 @@ class CCAPI:
     @focusincrement.setter
     def focusincrement(self, n):
         ability = self.get_focusincrement()["ability"]
-        print("AAA", ability)
         if ability["min"] <= n <= ability["max"]:
             r = self._put(path="/ccapi/ver100/shooting/settings/focusbracketing/focusincrement",
                           json={"value": n})
@@ -221,7 +228,7 @@ class CCAPI:
 
     def _get_enable(self, on):
         value = False
-        if on in ["1", "on", True]:
+        if on in ["1", "on", True, "enable"]:
             value = "enable"
         else:
             value = "disable"
@@ -274,7 +281,10 @@ class CCAPI:
         return response
 
     def preview(self, name):
-        os.system(f" open /Applications/Google\ Chrome.app {name}")
+        if os_is_mac():
+            os.system(f"open /Applications/Google\ Chrome.app {name}")
+        elif os_is_linux():
+            os.system(f"open {name}")
 
     def shoot(self, af=True):
         af = self._get_bool(af)
@@ -317,7 +327,7 @@ def beep():
 if __name__ == '__main__':
 
     camera = CCAPI("192.168.50.210")
-    r = camera.ccapi(output="table")
+    r = camera.ccapi(output="github")
     print(r)
     # r = camera.ccapi(output="json")
     # print(r)
