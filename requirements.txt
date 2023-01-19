@@ -3,3 +3,4 @@ eel
 humanize
 streamlit
 watchdog
+ipywidgets

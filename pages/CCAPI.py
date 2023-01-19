@@ -1,7 +1,5 @@
-from ccapi import CCAPI
 import streamlit as st
-import os
-from cloudmesh.common.Tabulate import Printer
+from ccapi import CCAPI
 
 # def handle_ip():
 #     print("IP", st.session_state.ip)
@@ -20,7 +18,3 @@ st.markdown("# CCAPI Table")
 camera = CCAPI()
 ccapi_table = camera.ccapi(output="github")
 st.markdown(ccapi_table)
-
-
-
-

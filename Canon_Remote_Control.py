@@ -30,7 +30,6 @@ st.session_state.image_available = False
 if not st.session_state.image_available:
     st.sidebar.markdown("# Canon Remote Control")
 
-
 values = {}
 st.session_state.camera_values = values
 
@@ -57,13 +56,15 @@ def preview():
     except Exception as e:
         st.write("error loading preview")
         st.write(e)
-    print ("preview")
+    print("preview")
+
 
 def stack():
-    print ("stack")
+    print("stack")
     camera = CCAPI()
     device = camera.get_deviceinformation()
     camera.shoot(af=False)
+
 
 def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview):
     value = settings[version][key]["value"]
@@ -87,10 +88,10 @@ def generate_slider(label=None, key=None, version="ver110", position=st.sidebar)
                                 step=step)
     return component
 
+
 def save():
     print("save")
     print(st.session_state.camera_values)
-
 
     for key, version in [("iso", "ver110"),
                          ("av", "ver110"),
@@ -122,9 +123,8 @@ st.sidebar.markdown("# Focusbracketing")
 for label, key, version in [("Focusbracketing", "focusbracketing", "ver110")]:
     values[key] = generate_selectbox(label=label, key=key, version=version)
 
-
 for label, key, version in [("Number of shots", "focusbracketing_numberofshots", "ver110"),
-                     ("Focus increment", "focusbracketing_focusincrement", "ver110")]:
+                            ("Focus increment", "focusbracketing_focusincrement", "ver110")]:
     values[key] = generate_slider(label=label, key=key, version=version)
 
 st.sidebar.markdown("# General")
@@ -141,3 +141,7 @@ for key, version in [("iso", "ver110"),
                      ]:
     values[key] = generate_selectbox(label=key, key=key, version=version)
 st.session_state.camera_values = values
+
+log = st.container()
+
+log.write("msg")

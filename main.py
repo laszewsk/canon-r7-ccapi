@@ -1,5 +1,6 @@
-import eel
 from random import randint
+
+import eel
 
 eel.init("web")
 

@@ -1,6 +1,5 @@
-from ccapi import CCAPI
 import streamlit as st
-import os
+from ccapi import CCAPI
 from cloudmesh.common.Tabulate import Printer
 
 # def handle_ip():
@@ -25,7 +24,7 @@ st.markdown("# Owner")
 
 if private:
     author = "Your name"
-    owner =  "Your name"
+    owner = "Your name"
     copyright = "Your e-mail or name"
     nickname = "The nickname of the camera on Wifi"
     ip = "192.168.xxx.xxx"
@@ -35,7 +34,7 @@ if private:
     device["serialnumber"] = "000000000000"
 else:
     author = camera.author
-    owner =  camera.owner
+    owner = camera.owner
     copyright = camera.copyright
     nickname = camera.nickname
     ip = camera.ip
@@ -60,18 +59,17 @@ st.markdown("# Storage")
 storage = camera.get_storage()
 
 cards = Printer.write(storage,
-                  max_width=128,
-                  order=["name", "maxsize", "spacesize", "contentsnumber", "accesscapability"],
-                  header=["Name", "Total", "Free", "Images", "Accesscapability"],
-                  output="github")
+                      max_width=128,
+                      order=["name", "maxsize", "spacesize", "contentsnumber", "accesscapability"],
+                      header=["Name", "Total", "Free", "Images", "Accesscapability"],
+                      output="github")
 st.markdown(cards)
 
 for i in range(2):
     m = float(storage[i]["maxsize"].replace(" GB", ""))
     free = float(storage[i]["spacesize"].replace(" GB", ""))
     level = str(round(free / m * 100.0, 2))
-    st.sidebar.metric(label=f"Card {i+1}", value =f"{level} % free")
-
+    st.sidebar.metric(label=f"Card {i + 1}", value=f"{level} % free")
 
 st.markdown("# Battery")
 
@@ -82,7 +80,7 @@ st.markdown(Printer.write(b,
                           header=["Name", "Level", "Quality"],
                           output="github"))
 level = b[0]["level"]
-st.sidebar.metric(label="Battery", value =f"{level} % charged")
+st.sidebar.metric(label="Battery", value=f"{level} % charged")
 
 temp = camera.get_temperature()["status"]
 st.sidebar.metric(label="Temperature", value=f"{temp}")
