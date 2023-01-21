@@ -11,7 +11,7 @@ I use it to control focus bracketing from a computer.
 
 Please note this only works for the models as documented at
 * https://developers.canon-europe.com/developers/s/article/Latest-CCAPI
-for Version: 1.3.0 (Released on 12th December 2022)
+* Version: 1.3.0 (Released on 12th December 2022)
 
 This includes:
 
