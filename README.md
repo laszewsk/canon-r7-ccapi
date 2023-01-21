@@ -75,3 +75,10 @@ Those will install and run the program using a GUI.
 * showcasing the macro stand
 * evaluate integration with WeMacro
 
+## Other Links
+
+* Canon video tutorial https://www.youtube.com/watch?v=NwFHUGYzC3Y
+* JavaScript based examples https://dphacks.com/how-to-canon-camera-control-api-ccapi/
+* Canomate https://www.testcams.com/canomate/
+
+
