@@ -12,7 +12,7 @@ from cloudmesh.common.Shell import Shell
 # from cloudmesh.common.Printer import Printer
 from cloudmesh.common.Tabulate import Printer
 from cloudmesh.common.systeminfo import os_is_linux, os_is_mac
-
+from ccapi.ccapi_ipynb import gui as notebook_gui
 
 def df_from_csv(content):
     df = pd.read_csv(StringIO(content))
@@ -61,6 +61,10 @@ class CCAPI:
         self.port = port
         self.settings = self.get_settings()
 
+    def gui(self, key=None):
+        w = notebook_gui(self, key=key)
+        return w
+
     def create_cache(self, directory):
         """
         Not yet implemented.
@@ -99,7 +103,8 @@ class CCAPI:
         name = os.path.basename(url)
         thumb = url + "?kind=thumbnail"
 
-        print("FETCH:", thumb)
+        if self.debug:
+            print("FETCH:", thumb)
         response = requests.get(thumb, stream=True)
         filename = f"{directory}/{prefix}{name}"
 
@@ -371,7 +376,7 @@ class CCAPI:
         :rtype:
         """
         b = self.get_battery(output="json")["level"]
-        return b
+        return int(b)
 
     def get_battery(self, output="table"):
         """
@@ -425,9 +430,9 @@ class CCAPI:
                     # and not just a single value. Also all picture
                     # quality apis need to be handeled differentl
                     try:
-                        if len(self.settings[version][key]["value"]) > 1:
-                            self.settings[version][key]["kind"] = "list"
-                        elif key in ["stillimagequality","wbshift"] or "picturestyle" in key:
+                        #if len(self.settings[version][key]["value"]) > 1:
+                        #    self.settings[version][key]["kind"] = "list"
+                        if key in ["stillimagequality","wbshift"] or "picturestyle" in key:
                             self.settings[version][key]["kind"] = "unkown"
                         elif "min" in entry["ability"]:
                             self.settings[version][key]["kind"] = "slider"
@@ -546,10 +551,10 @@ class CCAPI:
 
     def liveview(self, display="on", size="medium"):
         if display not in ["on", "off", "keep"]:
-            print("p error")
+            print("error setting display")
             return None
         if size not in ["small", "off", "medium"]:
-            print("p error")
+            print("error setting size")
             return None
 
         r = self._post(path="/ccapi/ver100/shooting/liveview",
@@ -559,7 +564,41 @@ class CCAPI:
 
         return r
 
-    def get_image(self, name):
+    def load(self, image, download=False, refresh=False):
+        from IPython.display import Image
+        if download:
+            self.download(image, refresh=refresh)
+        name = os.path.basename(image)
+        return Image(filename=name)
+
+    def display(self, image, download=False, refresh=False):
+        from IPython.display import display as ip_display
+        i = self.load(image, download=download, refresh=refresh)
+        return i
+
+    def download(self, image, refresh=False):
+        """
+        Downloads an image, if itis not already downloaded
+
+        :param image:
+        :type image:
+        :return:
+        :rtype:
+        """
+        url = f"http://192.168.50.210:8080{image}"
+
+        name = os.path.basename(url)
+        if self.debug:
+            print ("Downloading:", url)
+
+        response = requests.get(url, stream=True)
+
+        if not os.path.isfile(name) or refresh:
+            with open(name, 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+        return response
+
+    def get_liveview_image(self, name):
         """
         Downloads he liveview image and puts it in the file with the given names
         :param name:
@@ -574,7 +613,6 @@ class CCAPI:
         response = requests.get(url, stream=True)
         with open(name, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
-        # del response
         return response
 
     def preview(self, name):
@@ -596,7 +634,18 @@ class CCAPI:
 
     def get_shootingmodedial(self):
         # only supported for PowerSHot cameras
-        r = self._get(path="/ccapi/ver100/shooting/settings/shootingmodedial").json()["value"]
+        r = self._get(path="/ccapi/ver100/shooting/settings/shootingmodedial").json()
+        return r
+
+
+    @property
+    def shootingmodedial(self):
+        r = self.get_settings_value(key="shootingmodedial")["value"]
+        return r
+
+    @shootingmodedial.setter
+    def shootingmodedial(self, value):
+        r = self.set_settings_value(key="shootingmodedial", value=value)
         return r
 
     def autofocus(self, on):
@@ -916,7 +965,7 @@ if __name__ == '__main__':
 
     for i in range(3):
         name = f"img{i}.jpeg"
-        r = camera.get_image(name)
+        r = camera.get_liveview_image(name)
         camera.preview(name)
         print(r)
         print(r.headers)

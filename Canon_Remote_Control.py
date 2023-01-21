@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 
-from ccapi import CCAPI
+from ccapi.ccapi import CCAPI
 
 about = """
 This application uses is used to control a Canon camera remotely.
