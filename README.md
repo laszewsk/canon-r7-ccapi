@@ -60,12 +60,21 @@ Make sure your camera is compatible
 ```bash
 $ git clone https://github.com/laszewsk/canon-r7-ccapi.git
 $ cd canon-r7-ccapi
-$ pip install -r requirements.txt
+$ pip install -e .
 $ export CANON_IP=<Your canon camera ip address>
 $ make
 ```
 
 Those will install and run the program using a GUI.
+
+Future:
+
+The following is not yet supported and tested
+
+```bash
+pip install conon-r7-ccapi
+crc
+```
 
 ## Plan
 

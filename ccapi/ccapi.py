@@ -19,6 +19,13 @@ def df_from_csv(content):
     return df
 
 
+class Computer:
+
+    def beep(self):
+        sys.stdout.write('\a')
+
+
+
 class CCAPI:
     """
     A Python class to interface with a Cannon camera via the Canon CCAPI using
@@ -35,7 +42,7 @@ class CCAPI:
     # metering
     # drive
 
-    def __init__(self, ip=None, port=8080, debug=True):
+    def __init__(self, ip=None, port=8080, debug=True, settings="canon-settings.json"):
         """
         Connects to the camera given the ip and port.
         If the ip is not specified, it will be looked up from the
@@ -47,6 +54,7 @@ class CCAPI:
         :type port: integare
         """
         self.debug = debug
+        self.settings_file = settings
         if ip is None and os.environ["CANON_IP"]:
             ip = os.environ["CANON_IP"]
         self.ip = ip
@@ -396,15 +404,42 @@ class CCAPI:
         :return:
         :rtype:
         """
-        if not refresh and os.path.exists("settings.json"):
-            with open("settings.json", "r") as file:
+        if not refresh and os.path.exists(self.settings_file):
+            with open(self.settings_file, "r") as file:
                 c = json.load(file)
         else:
-            c = {"ver110": self._get(path="/ccapi/ver110/shooting/settings").json(),
-                 "ver100": self._get(path="/ccapi/ver100/shooting/settings").json()}
-            with open("settings.json", "w") as file:
-                json.dump(c, indent=4, fp=file)
-        return c
+            self.settings = {
+                "ver110": self._get(path="/ccapi/ver110/shooting/settings").json(),
+                "ver100": self._get(path="/ccapi/ver100/shooting/settings").json()
+            }
+
+            for version in self.settings:
+                for key in self.settings[version]:
+                    entry = self.settings[version][key]
+                    #
+                    # the kind settings does not yet work for all as some have
+                    # multiple choices and sliders
+                    #
+                    # an example is still imagequality
+                    # which can have a value for raw and jpeg
+                    # and not just a single value. Also all picture
+                    # quality apis need to be handeled differentl
+                    try:
+                        if len(self.settings[version][key]["value"]) > 1:
+                            self.settings[version][key]["kind"] = "list"
+                        elif key in ["stillimagequality","wbshift"] or "picturestyle" in key:
+                            self.settings[version][key]["kind"] = "unkown"
+                        elif "min" in entry["ability"]:
+                            self.settings[version][key]["kind"] = "slider"
+                        else:
+                            self.settings[version][key]["kind"] = "choice"
+                    except:
+                        pass
+                    api = "/shooting/settings/" + key.replace("_","/")
+                    self.settings[version][key]["api"] = api
+            with open(self.settings_file, "w") as file:
+                json.dump(self.settings, indent=4, fp=file)
+        return self.settings
 
     def contents(self):
         """
@@ -548,6 +583,12 @@ class CCAPI:
         elif os_is_linux():
             os.system(f"open {name}")
 
+    # def get_cardformat(self):
+    #     # only supported for PowerSHot cameras
+    #     r = self._get(path="/ccapi/ver100/functions/cardformat")
+    #     return r
+
+
     def get_zoom(self):
         # only supported for PowerSHot cameras
         r = self._get(path="/ccapi/ver100/shooting/control/zoom")
@@ -640,6 +681,18 @@ class CCAPI:
         return value
 
     @property
+    def beep(self):
+        version = "ver100"
+        key = "beep"
+        r = self._get(path=f"/ccapi/{version}/functions/{key}").json()["value"]
+        return r
+
+    # @beep.setter
+    # def beep(self, value):
+    #     r = self.set_settings_value(key="beep", value=value)
+    #     return r
+
+    @property
     def av(self):
         r = self.get_settings_value(key="av")["value"]
         return r
@@ -709,6 +762,17 @@ class CCAPI:
         r = self.set_settings_value(key="aeb", value=value)
         return r
 
+
+    @property
+    def colortemperature(self):
+        r = self.get_settings_value(key="colortemperature")["value"]
+        return r
+
+    @colortemperature.setter
+    def colortemperature(self, value):
+        r = self.set_settings_value(key="colortemperature", value=value)
+        return r
+
     @property
     def colorspace(self):
         r = self.get_settings_value(key="colorspace")["value"]
@@ -759,21 +823,13 @@ class CCAPI:
         r = self.set_settings_value(key="shuttermode", value=value)
         return r
 
-
-#
-
-# | ver100  | /ccapi/ver100/shooting/settings/focusbracketing                        | True  | True  | False | False  |
-# | ver100  | /ccapi/ver100/shooting/settings/focusbracketing/numberofshots          | True  | True  | False | False  |
-# | ver100  | /ccapi/ver100/shooting/settings/focusbracketing/focusincrement         | True  | True  | False | False  |
-# | ver100  | /ccapi/ver100/shooting/settings/focusbracketing/exposuresmoothing      | True  | True  | False | False  |
-
 def beep():
     sys.stdout.write('\a')
 
 
 if __name__ == '__main__':
 
-    camera = CCAPI("192.168.50.210")
+    camera = CCAPI()
     r = camera.ccapi(output="github")
     print(r)
     # r = camera.ccapi(output="json")
@@ -871,7 +927,7 @@ if __name__ == '__main__':
     # r = camera.shoot_control(af=True, action="half_press")
     # r = camera.focus()
 
-    # url = "https://192.168.50.210:8080/ccapi/ver100/shooting/liveview/flip"
+    # url = "https://192.xxx.xxx.xxx:8080/ccapi/ver100/shooting/liveview/flip"
 
     # r = requests.get(url)
 

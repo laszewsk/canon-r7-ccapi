@@ -1,3 +1,4 @@
+requests
 cloudmesh-common
 eel
 humanize
