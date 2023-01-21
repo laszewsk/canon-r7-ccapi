@@ -3,11 +3,11 @@
 ## The problem
 
 Many people noticed that the regular EOS Utility program has issues
-on some Mac's. This happens only via WiFi. The USB connection works fine.
-However we like to be able to access the Cannon cameras via WiFi read on.
+on some Macs. This happens only via WiFi. The USB connection works fine.
+However, we like to be able to access the Cannon cameras via WiFi read-on.
 Furthermore, not all features are supported on Android apps interfacing with 
-the canon camera so this is unfortunatly yet not an option.
-I use it to control focusbracketing from a computer.
+the canon camera so this is unfortunately yet not an option.
+I use it to control focus bracketing from a computer.
 
 Please note this only works for the models as documented at
 * https://developers.canon-europe.com/developers/s/article/Latest-CCAPI
@@ -33,25 +33,25 @@ This includes:
   EOS RP,
   PowerShot SX70 HS
 
-Note that you need to likely update your frmware. Firmware update is rather simple on the Canon cameras, you download it, put it on an your sd card and select firmware update, than you wait paitently when done. Make sure you have fully charde battery. DOw not power down during firmware upgrade. Read the canon instructions for this,
+Note that you need to likely update your firmware. Firmware update is rather simple on the Canon cameras, you download it, put it on your SD card, select firmware update then wait patiently when done. Make sure you have a fully charged battery. Do not power down during firmware upgrade. Read the canon instructions for this,
 
 ## The solution
 
-The method chosen here uses the official CCAPI that relies on REST service
-calls in the network shared between the camera and the compter. The following
+The method chosen here uses the official CCAPI that relies on a REST service
+calls in the network shared between the camera and the computer. The following
 features are available:
 
 * Elementary Python library to control many of the camera
 * Elementary GUI interface to run the program from a GUI
-* Ability to run the GUI on Linux, macOS, Windows 10, Windows11
+* Ability to run the GUI on Linux, macOS, Windows 10, Windows 11
 * Expandable
 * demonstration on how to use the library in jupyter notebooks so you can create easily interactive workflows.
 
-For example, With this GUI it is possible to conduct focus brackating remotely. Many
-fetuares of the camera can be controlled remotely.
+For example, With this GUI it is possible to conduct focus bracketing remotely. Many
+features of the camera can be controlled remotely.
 
 As the program uses CCAPI it can be likely used for other cameras also.
-Make suer your camera is compatible
+Make sure your camera is compatible
 
 ... more will be added here
 
@@ -65,7 +65,7 @@ $ export CANON_IP=<Your canon camera ip address>
 $ make
 ```
 
-Thos will install and run the program using a GUI.
+Those will install and run the program using a GUI.
 
 ## Plan
 
