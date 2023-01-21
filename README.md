@@ -4,7 +4,36 @@
 
 Many people noticed that the regular EOS Utility program has issues
 on some Mac's. This happens only via WiFi. The USB connection works fine.
-However we like to be able to access the Cannon cameras via WiFi.
+However we like to be able to access the Cannon cameras via WiFi read on.
+Furthermore, not all features are supported on Android apps interfacing with 
+the canon camera so this is unfortunatly yet not an option.
+I use it to control focusbracketing from a computer.
+
+Please note this only works for the models as documented at
+* https://developers.canon-europe.com/developers/s/article/Latest-CCAPI
+for Version: 1.3.0 (Released on 12th December 2022)
+
+This includes:
+
+* EOS R6 Mark II,
+  EOS R7,	
+  EOS R10,	
+  EOS R3,
+  EOS M50 Mark II,	
+  EOS R5,
+  EOS R6,
+  EOS 850D,	
+  EOS-1D X Mark III, 
+  EOS M200,
+  EOS 90D,
+  EOS M6 Mark II,
+  PowerShot G5 X Mark II,
+  PowerShot G7 X Mark III,
+  EOS 250D,
+  EOS RP,
+  PowerShot SX70 HS
+
+Note that you need to likely update your frmware. Firmware update is rather simple on the Canon cameras, you download it, put it on an your sd card and select firmware update, than you wait paitently when done. Make sure you have fully charde battery. DOw not power down during firmware upgrade. Read the canon instructions for this,
 
 ## The solution
 
@@ -12,12 +41,13 @@ The method chosen here uses the official CCAPI that relies on REST service
 calls in the network shared between the camera and the compter. The following
 features are available:
 
-* Elementary Python library to control many of the Canon camera
+* Elementary Python library to control many of the camera
 * Elementary GUI interface to run the program from a GUI
 * Ability to run the GUI on Linux, macOS, Windows 10, Windows11
 * Expandable
+* demonstration on how to use the library in jupyter notebooks so you can create easily interactive workflows.
 
-With this GUI it is possible to conduct focus brackating remotely. Many
+For example, With this GUI it is possible to conduct focus brackating remotely. Many
 fetuares of the camera can be controlled remotely.
 
 As the program uses CCAPI it can be likely used for other cameras also.
