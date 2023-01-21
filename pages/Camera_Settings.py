@@ -1,5 +1,5 @@
 import streamlit as st
-from ccapi import CCAPI
+from ccapi.ccapi import CCAPI
 
 st.markdown("# Camera Settings")
 

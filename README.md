@@ -76,7 +76,55 @@ pip install conon-r7-ccapi
 crc
 ```
 
+## GUI Interface
+
+The program also provides a minimal GUI interface that could be 
+enhanced with additional features. It serves also as an example
+on how to use the API.
+
+The GUI has three tabs: Preview, General, Focusbracketing
+
+A Preview will apear when the "Preview from Camera" is pressed.
+In General you can set most parameters controlling the camera.
+In Focus bracketing you can set some parameters to control focus bracketing.
+
+Additional menu items are available in the sidebar, such as listing the content
+of the SD Cards and so on.
+
+Here are the screenshots of the three Tab windows.
+
+![Preview](images/preview.png)
+
+**Figure 1:** Screenshot of the preview tab.
+
+![General](images/general_settigs.png)
+
+**Figure 2:** Screenshot of the General tab.
+
+![Focusbracketing](images/fousbracketing.png)
+
+**Figure 3:** Screenshot of the focus bracketing tab.
+
+## API
+
+The python API we developed is simple and its elementary python 
+use is documented in the following 
+[Jupyter notebook](examples/notebook.ipynb). 
+
+
+## Notebook
+
+The  
+[Jupyter notebook](examples/notebook.ipynb) is available from Github.
+For the notebook we use 
+a different GUI that is based in ipywidgets.
+It is also documented in [medium.com](https://medium.com/@laszewski/using-jupyter-notebooks-to-control-your-canon-camera-936d6b5ac0a4).
+
+Using Jupyter allows one to write simple interactive workflows for manipulating images.
+
+
 ## Plan
+
 
 * manual
 * documentation of the API

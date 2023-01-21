@@ -25,6 +25,8 @@ st.set_page_config(
     }
 )
 
+tab_preview, tab_general, tab_focusbracketing, = st.tabs(["Preview", "Settings", "Focusbraceting"])
+
 st.session_state.image_available = False
 
 if not st.session_state.image_available:
@@ -38,24 +40,25 @@ camera = CCAPI()
 settings = camera.get_settings()
 
 
-def preview():
+def preview(position=tab_preview):
     camera = CCAPI()
     device = camera.get_deviceinformation()
 
     name = "./preview.jpeg"
     # camera.release()
     r = camera.liveview(display="on", size="medium")
-    r = camera.get_image(name)
+    r = camera.get_liveview_image(name)
     # camera.preview(name)
-    st.markdown("# Preview")
+
+    position.markdown("# Preview")
 
     try:
         image = Image.open('./preview.jpeg')
-        st.image(image, caption='Preview')
-        st.session_state.image_available = True
+        position.image(image, caption='Preview')
+        position.session_state.image_available = True
     except Exception as e:
-        st.write("error loading preview")
-        st.write(e)
+        position.write("error loading preview")
+        position.write(e)
     print("preview")
 
 
@@ -67,6 +70,7 @@ def stack():
 
 
 def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview):
+    version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
     index = ability.index(value)
@@ -75,6 +79,7 @@ def generate_selectbox(label=None, key=None, version="ver110", position=st.sideb
 
 
 def generate_slider(label=None, key=None, version="ver110", position=st.sidebar):
+    version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
     minimum = ability["min"]
@@ -93,17 +98,17 @@ def save():
     print("save")
     print(st.session_state.camera_values)
 
-    for key, version in [("iso", "ver110"),
-                         ("av", "ver110"),
-                         ("tv", "ver110"),
-                         ("drive", "ver110"),
-                         ("aeb", "ver110"),
-                         ("flash", "ver110"),
-                         ("shuttermode", "ver100"),
-                         # ("exposure", "ver100"),
-                         ("focusbracketing", "ver110"),
-                         ("focusbracketing_numberofshots", "ver110"),
-                         ("focusbracketing_focusincrement", "ver110")]:
+    for key in ["iso",
+                "av",
+                "tv",
+                "drive",
+                "aeb",
+                "flash",
+                "shuttermode",
+                # ("exposure", "ver100"),
+                "focusbracketing",
+                "focusbracketing_numberofshots",
+                "focusbracketing_focusincrement"]:
         print(key, ":", st.session_state.camera_values[key])
 
     camera.focusbracketing = st.session_state.camera_values["focusbracketing"]
@@ -119,29 +124,30 @@ st.sidebar.button("Save Parameters to :camera:", on_click=save)
 st.sidebar.button("Preview Image from :camera:", on_click=preview)
 st.sidebar.button("Create Stack :camera: ... :camera:", on_click=stack)
 
-st.sidebar.markdown("# Focusbracketing")
-for label, key, version in [("Focusbracketing", "focusbracketing", "ver110")]:
-    values[key] = generate_selectbox(label=label, key=key, version=version)
 
-for label, key, version in [("Number of shots", "focusbracketing_numberofshots", "ver110"),
-                            ("Focus increment", "focusbracketing_focusincrement", "ver110")]:
-    values[key] = generate_slider(label=label, key=key, version=version)
+tab_focusbracketing.markdown("# Focusbracketing")
+for label, key in [("Focusbracketing", "focusbracketing")]:
+    values[key] = generate_selectbox(position=tab_focusbracketing, label=label, key=key)
 
-st.sidebar.markdown("# General")
+for label, key in [("Number of shots", "focusbracketing_numberofshots"),
+                   ("Focus increment", "focusbracketing_focusincrement")]:
+    values[key] = generate_slider(position=tab_focusbracketing,label=label, key=key)
 
-for key, version in [("iso", "ver110"),
-                     ("av", "ver110"),
-                     ("tv", "ver110"),
-                     ("drive", "ver110"),
-                     ("aeb", "ver110"),
-                     ("flash", "ver110"),
-                     ("shuttermode", "ver100"),
-                     ("afmethod", "ver110"),
-                     # ("exposure", "ver100")
-                     ]:
-    values[key] = generate_selectbox(label=key, key=key, version=version)
+tab_general.markdown("# General")
+
+for key in ["iso",
+            "av",
+            "tv",
+            "drive",
+            "aeb",
+            "flash",
+            "shuttermode",
+            "afmethod"
+            # ("exposure", "ver100")
+            ]:
+    values[key] = generate_selectbox(position=tab_general,label=key, key=key)
 st.session_state.camera_values = values
 
-log = st.container()
-
-log.write("msg")
+# log = st.container()
+#
+# log.write("msg")

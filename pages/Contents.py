@@ -1,7 +1,7 @@
 import os
 
 import streamlit as st
-from ccapi import CCAPI
+from ccapi.ccapi import CCAPI
 from cloudmesh.common.Tabulate import Printer
 
 st.markdown("# Cards")

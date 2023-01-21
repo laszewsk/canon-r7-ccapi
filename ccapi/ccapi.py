@@ -620,6 +620,8 @@ class CCAPI:
             os.system(f"open /Applications/Google\ Chrome.app {name}")
         elif os_is_linux():
             os.system(f"open {name}")
+        else:
+            print("previe for this OS not yet supported")
 
     # def get_cardformat(self):
     #     # only supported for PowerSHot cameras
