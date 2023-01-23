@@ -73,12 +73,16 @@ def generate_selectbox(label=None, key=None, version="ver110", position=st.sideb
     version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
-    if len(ability) != 0:
+    disabled = len(ability) == 0
+    if not disabled:
         index = ability.index(value)
         component = position.selectbox(label=label, key=key, options=ability, index=index, on_change=on_change)
     else:
-        position.markdown(f"**{key}** can not be set")
-        component = None
+        component = position.selectbox(label=label,
+                                       key=key,
+                                       options=["av is disabled and not be set"],
+                                       index=0,
+                                       disabled=disabled)
     return component
 
 
