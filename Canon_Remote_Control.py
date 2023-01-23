@@ -73,8 +73,12 @@ def generate_selectbox(label=None, key=None, version="ver110", position=st.sideb
     version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
-    index = ability.index(value)
-    component = position.selectbox(label=label, key=key, options=ability, index=index, on_change=on_change)
+    if len(ability) != 0:
+        index = ability.index(value)
+        component = position.selectbox(label=label, key=key, options=ability, index=index, on_change=on_change)
+    else:
+        position.markdown(f"**{key}** can not be set")
+        component = None
     return component
 
 
@@ -85,12 +89,16 @@ def generate_slider(label=None, key=None, version="ver110", position=st.sidebar)
     minimum = ability["min"]
     maximum = ability["max"]
     step = ability["step"]
-    component = position.slider(label=label,
-                                key=key,
-                                value=value,
-                                min_value=minimum,
-                                max_value=maximum,
-                                step=step)
+    if len(ability) != 0:
+        component = position.slider(label=label,
+                                    key=key,
+                                    value=value,
+                                    min_value=minimum,
+                                    max_value=maximum,
+                                    step=step)
+    else:
+        position.markdown(f"**{key}** can not be set")
+        component = None
     return component
 
 
