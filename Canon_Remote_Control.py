@@ -1,5 +1,7 @@
 import streamlit as st
 from PIL import Image
+import streamlit as st
+import requests
 
 from ccapi.ccapi import CCAPI
 
@@ -25,7 +27,12 @@ st.set_page_config(
     }
 )
 
-tab_preview, tab_general, tab_focusbracketing, = st.tabs(["Preview", "Settings", "Focusbraceting"])
+# tab_preview, tab_general, tab_focusbracketing, tab_video = \
+#     st.tabs(["Preview", "Settings", "Focusbraceting", "Video"])
+
+tab_preview, tab_general, tab_focusbracketing = \
+    st.tabs(["Preview", "Settings", "Focusbraceting"])
+
 
 st.session_state.image_available = False
 
@@ -159,6 +166,13 @@ for key in ["iso",
             ]:
     values[key] = generate_selectbox(position=tab_general,label=key, key=key)
 st.session_state.camera_values = values
+#
+# tab_video.markdown("# Video")
+#
+# frame_window = tab_video.image( [] )
+# take_picture_button = tab_video.button( 'Take Picture' )
+#
+# camera.cam_view(location=tab_video)
 
 # log = st.container()
 #

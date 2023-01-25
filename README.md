@@ -139,3 +139,9 @@ Using Jupyter allows one to write simple interactive workflows for manipulating 
 * Canomate https://www.testcams.com/canomate/
 
 
+## enfuse
+
+* https://www.youtube.com/watch?v=Hsc7cOlUxdA
+* hugin panorama stciher has hugin
+* https://estar.photography/2020/08/23/easy-focus-stack-in-linux/
+* 

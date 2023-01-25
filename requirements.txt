@@ -5,3 +5,5 @@ humanize
 streamlit
 watchdog
 ipywidgets
+opencv-python
+imutils

@@ -5,14 +5,17 @@ import sys
 from datetime import datetime
 from io import StringIO
 
+import cv2
 import humanize
+import numpy as np
 import pandas as pd
 import requests
+from ccapi.ccapi_ipynb import gui as notebook_gui
 from cloudmesh.common.Shell import Shell
 # from cloudmesh.common.Printer import Printer
 from cloudmesh.common.Tabulate import Printer
 from cloudmesh.common.systeminfo import os_is_linux, os_is_mac
-from ccapi.ccapi_ipynb import gui as notebook_gui
+
 
 def df_from_csv(content):
     df = pd.read_csv(StringIO(content))
@@ -23,7 +26,6 @@ class Computer:
 
     def beep(self):
         sys.stdout.write('\a')
-
 
 
 class CCAPI:
@@ -430,9 +432,9 @@ class CCAPI:
                     # and not just a single value. Also all picture
                     # quality apis need to be handeled differentl
                     try:
-                        #if len(self.settings[version][key]["value"]) > 1:
+                        # if len(self.settings[version][key]["value"]) > 1:
                         #    self.settings[version][key]["kind"] = "list"
-                        if key in ["stillimagequality","wbshift"] or "picturestyle" in key:
+                        if key in ["stillimagequality", "wbshift"] or "picturestyle" in key:
                             self.settings[version][key]["kind"] = "unkown"
                         elif "min" in entry["ability"]:
                             self.settings[version][key]["kind"] = "slider"
@@ -440,7 +442,7 @@ class CCAPI:
                             self.settings[version][key]["kind"] = "choice"
                     except:
                         pass
-                    api = "/shooting/settings/" + key.replace("_","/")
+                    api = "/shooting/settings/" + key.replace("_", "/")
                     self.settings[version][key]["api"] = api
             with open(self.settings_file, "w") as file:
                 json.dump(self.settings, indent=4, fp=file)
@@ -564,6 +566,72 @@ class CCAPI:
 
         return r
 
+    cam = "/ccapi/ver100/shooting/liveview/rtp"
+
+
+    def cam_start(self):
+        r = self._post(path=self.cam,
+                       json={"action": "start",
+                             "ipaddress": "192.168.50.211:8080"
+                             })
+
+    def cam_stop(self):
+        r = self._post(path=self.cam,
+                       json={"action": "stop",
+                             "ipaddress": "192.168.50.211:8080"
+                             })
+
+
+    def cam_view(self, location=None):
+
+        frame_window = location.image([])
+        take_picture_button = location.button('Take Picture from Video')
+
+        self.cam_start()
+        url = f"http://192.168.50.210:8080{self.cam}"
+        # while True:
+        #     # Request the image from the server
+        #     response = requests.get(url=url)
+        #     imgNp = np.array(bytearray(response.content), dtype=np.uint8)
+        #     frame = cv2.imdecode(imgNp, cv2.IMREAD_UNCHANGED)
+        #     # As OpenCV decodes images in BGR format, we'd convert it to the RGB format
+        #     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #     try:
+        #         frame_window.image(frame)
+        #     except Exception as e:
+        #         print (e)
+        #         pass
+
+        # vid = cv2.VideoCapture(url)  # For streaming links
+        # while True:
+        #     _, frame = vid.read()
+        #     print(frame)
+        #     cv2.imshow('Video Live IP cam', frame)
+        #     key = cv2.waitKey(1) & 0xFF
+        #     if key == ord('q'):
+        #         break
+        #
+        # vid.release()
+        # cv2.destroyAllWindows()
+        # vid = cv2.VideoCapture("rtp://192.168.50.210:8081")
+        # while True:
+        #     rdy, frame = vid.read()
+        #     print(rdy)
+        #     try:
+        #         cv2.imshow('Video Live IP cam', frame)
+        #         key = cv2.waitKey(1) & 0xFF
+        #         if key == ord('q'):
+        #             break
+        #     except:
+        #         pass
+        #
+        # vid.release()
+        # cv2.destroyAllWindows()
+        #
+        # self.cam_stop()
+
+        pass
+
     def load(self, image, download=False, refresh=False):
         from IPython.display import Image
         if download:
@@ -572,7 +640,6 @@ class CCAPI:
         return Image(filename=name)
 
     def display(self, image, download=False, refresh=False):
-        from IPython.display import display as ip_display
         i = self.load(image, download=download, refresh=refresh)
         return i
 
@@ -589,7 +656,7 @@ class CCAPI:
 
         name = os.path.basename(url)
         if self.debug:
-            print ("Downloading:", url)
+            print("Downloading:", url)
 
         response = requests.get(url, stream=True)
 
@@ -628,7 +695,6 @@ class CCAPI:
     #     r = self._get(path="/ccapi/ver100/functions/cardformat")
     #     return r
 
-
     def get_zoom(self):
         # only supported for PowerSHot cameras
         r = self._get(path="/ccapi/ver100/shooting/control/zoom")
@@ -638,7 +704,6 @@ class CCAPI:
         # only supported for PowerSHot cameras
         r = self._get(path="/ccapi/ver100/shooting/settings/shootingmodedial").json()
         return r
-
 
     @property
     def shootingmodedial(self):
@@ -813,7 +878,6 @@ class CCAPI:
         r = self.set_settings_value(key="aeb", value=value)
         return r
 
-
     @property
     def colortemperature(self):
         r = self.get_settings_value(key="colortemperature")["value"]
@@ -873,6 +937,7 @@ class CCAPI:
     def shuttermode(self, value):
         r = self.set_settings_value(key="shuttermode", value=value)
         return r
+
 
 def beep():
     sys.stdout.write('\a')
