@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import streamlit as st
 import requests
+import cv2
 
 from ccapi.ccapi import CCAPI
 
@@ -53,20 +54,45 @@ def preview(position=tab_preview):
 
     name = "./preview.jpeg"
     # camera.release()
+
     r = camera.liveview(display="on", size="medium")
-    r = camera.get_liveview_image(name)
-    # camera.preview(name)
 
-    position.markdown("# Preview")
+    for i in range(1): # for some reason it does not work for more
+        try:
+            r = camera.get_liveview_image(name)
+            image = Image.open('./preview.jpeg')
 
-    try:
-        image = Image.open('./preview.jpeg')
-        position.image(image, caption='Preview')
-        position.session_state.image_available = True
-    except Exception as e:
-        position.write("error loading preview")
-        position.write(e)
-    print("preview")
+            area = position.empty()
+            area = position.container()
+
+            area.markdown("# Preview")
+            area.image(image, caption=f'Preview {i}')
+
+            position.session_state.image_available = True
+        except Exception as e:
+            position.write("error loading preview" + str(e))
+        print("preview")
+
+    # placeholder_image = position.empty()
+    # placeholder_header = position.empty()
+    #
+    # placeholder_header.markdown("# Preview")
+    # while True:
+    #     k = cv2.waitKey(0)
+    #     # press 'q' to exit
+    #     if k == ord('q'):
+    #         break
+    #
+    #     r = camera.get_liveview_image(name)
+    #     # camera.preview(name)
+    #
+    #     try:
+    #         # image = Image.open('./preview.jpeg')
+    #         placeholder_image.image(image, caption='Preview')
+    #         placeholder_image.session_state.image_available = True
+    #     except Exception as e:
+    #         placeholder_image.write("error loading preview" + e)
+    #     print("preview")
 
 
 def stack():
@@ -76,7 +102,10 @@ def stack():
     camera.shoot(af=False)
 
 
-def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview):
+def generate_selectbox(label=None, key=None,
+                       version="ver110",
+                       position=st.sidebar,
+                       on_change=preview):
     version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
@@ -166,6 +195,8 @@ for key in ["iso",
             ]:
     values[key] = generate_selectbox(position=tab_general,label=key, key=key)
 st.session_state.camera_values = values
+
+
 #
 # tab_video.markdown("# Video")
 #

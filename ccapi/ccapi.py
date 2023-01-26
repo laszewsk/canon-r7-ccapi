@@ -665,6 +665,7 @@ class CCAPI:
                 shutil.copyfileobj(response.raw, out_file)
         return response
 
+
     def get_liveview_image(self, name):
         """
         Downloads he liveview image and puts it in the file with the given names
@@ -676,6 +677,7 @@ class CCAPI:
 
         url = "http://192.168.50.210:8080/ccapi/ver100/shooting/liveview/flipdetail?kind=image"
         url = "http://192.168.50.210:8080/ccapi/ver100/shooting/liveview/flip"
+
 
         response = requests.get(url, stream=True)
         with open(name, 'wb') as out_file:
