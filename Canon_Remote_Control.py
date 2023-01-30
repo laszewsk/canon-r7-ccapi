@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import streamlit as st
 import requests
+import cv2
 
 from ccapi.ccapi import CCAPI
 
@@ -47,7 +48,34 @@ camera = CCAPI()
 settings = camera.get_settings()
 
 
-def preview(position=tab_preview):
+def preview_stream(position=tab_preview):
+    camera = CCAPI()
+    device = camera.get_deviceinformation()
+
+    name = "./preview.jpeg"
+    # camera.release()
+    r = camera.liveview(display="on", size="medium")
+    r = camera.get_liveview_image(name)
+    # camera.preview(name)
+
+    area = position.empty()
+    area.markdown("# Preview")
+    while True:
+        try:
+            r = camera.get_liveview_image(name)
+            image = Image.open('./preview.jpeg')
+            area.image(image, caption='Preview')
+            area.session_state.image_available = True
+            k = cv2.waitKey(100)
+            if k == ord("q"):
+                break
+        except Exception as e:
+            area.write("error loading preview")
+            area.write(e)
+        print("preview")
+    print ("stream done")
+
+def preview_image(position=tab_preview):
     camera = CCAPI()
     device = camera.get_deviceinformation()
 
@@ -76,7 +104,7 @@ def stack():
     camera.shoot(af=False)
 
 
-def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview):
+def generate_selectbox(label=None, key=None, version="ver110", position=st.sidebar, on_change=preview_image):
     version = camera.get_settings_version(key=key)
     value = settings[version][key]["value"]
     ability = settings[version][key]["ability"]
@@ -140,7 +168,9 @@ st.sidebar.markdown("# Shoot")
 
 st.sidebar.button("Save Parameters to :camera:", on_click=save)
 
-st.sidebar.button("Preview Image from :camera:", on_click=preview)
+st.sidebar.button("Preview Image from :camera:", on_click=preview_image)
+st.sidebar.button("Preview Stream from :camera:", on_click=preview_stream)
+
 st.sidebar.button("Create Stack :camera: ... :camera:", on_click=stack)
 
 

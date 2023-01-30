@@ -572,13 +572,13 @@ class CCAPI:
     def cam_start(self):
         r = self._post(path=self.cam,
                        json={"action": "start",
-                             "ipaddress": "192.168.50.211:8080"
+                             "ipaddress": "rtsp://192.168.50.10:8554/camera"
                              })
 
     def cam_stop(self):
         r = self._post(path=self.cam,
                        json={"action": "stop",
-                             "ipaddress": "192.168.50.211:8080"
+                             "ipaddress": "rtsp://192.168.50.10:8554/camera"
                              })
 
 

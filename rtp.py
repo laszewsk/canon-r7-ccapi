@@ -8,8 +8,8 @@ camera = CCAPI(ip="192.168.50.210")
 
 camera.cam_start()
 
-rtsp_url = "rtsp://192.168.50.211:8081/ccapi/ver100/shooting/liveview/rtp"
-
+rtsp_url = "rtsp://192.168.50.211:8080/ccapi/ver100/shooting/liveview/rtp"
+rtsp_url= "http://192.168.50.210:8080/camera"
 vs = VideoStream(rtsp_url).start()
 
 print ("LLLL")
