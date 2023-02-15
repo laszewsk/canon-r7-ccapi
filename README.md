@@ -33,7 +33,7 @@ This includes:
   EOS RP,
   PowerShot SX70 HS
 
-Note that you need to likely update your firmware. Firmware update is rather simple on the Canon cameras, you download it, put it on your SD card, select firmware update then wait patiently when done. Make sure you have a fully charged battery. Do not power down during firmware upgrade. Read the canon instructions for this,
+Note that you need to likely update your firmware. Firmware update is rather simple on the Canon cameras, you download it, put it on your SD card, select firmware update then wait patiently when done. Make sure you have a fully charged battery. Do not power down during firmware upgrade. Read the canon instructions for this.
 
 ## The solution
 
@@ -41,19 +41,17 @@ The method chosen here uses the official CCAPI that relies on a REST service
 calls in the network shared between the camera and the computer. The following
 features are available:
 
-* Elementary Python library to control many of the camera
+* Elementary Python library to control many of the camera features
 * Elementary GUI interface to run the program from a GUI
 * Ability to run the GUI on Linux, macOS, Windows 10, Windows 11
 * Expandable
-* demonstration on how to use the library in jupyter notebooks so you can create easily interactive workflows.
+* Demonstration on how to use the library in jupyter notebooks so you can create easily interactive workflows.
 
 For example, With this GUI it is possible to conduct focus bracketing remotely. Many
 features of the camera can be controlled remotely.
 
 As the program uses CCAPI it can be likely used for other cameras also.
-Make sure your camera is compatible
-
-... more will be added here
+Make sure your camera is compatible.
 
 ## Install
 
@@ -73,7 +71,7 @@ The following is not yet supported and tested
 
 ```bash
 pip install conon-r7-ccapi
-crc
+cms crc
 ```
 
 ## GUI Interface
@@ -107,7 +105,7 @@ Here are the screenshots of the three Tab windows.
 
 ## API
 
-The python API we developed is simple and its elementary python 
+The python API developed is simple and its elementary python 
 use is documented in the following 
 [Jupyter notebook](examples/notebook.ipynb). 
 
@@ -125,7 +123,6 @@ Using Jupyter allows one to write simple interactive workflows for manipulating 
 
 ## Plan
 
-
 * manual
 * documentation of the API
 * writing an article for a hacker magazine/web site
@@ -142,6 +139,5 @@ Using Jupyter allows one to write simple interactive workflows for manipulating 
 ## enfuse
 
 * https://www.youtube.com/watch?v=Hsc7cOlUxdA
-* hugin panorama stciher has hugin
+* hugin panorama sticher has hugin
 * https://estar.photography/2020/08/23/easy-focus-stack-in-linux/
-* 
