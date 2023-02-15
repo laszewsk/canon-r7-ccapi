@@ -55,6 +55,10 @@ features of the camera can be controlled remotely.
 As the program uses CCAPI it can be likely used for other cameras also.
 Make sure your camera is compatible.
 
+For the R7 you find the firmware on the Cannon Web page at 
+
+* https://www.usa.canon.com/support/p/eos-r7
+
 ## Install
 
 ```bash
