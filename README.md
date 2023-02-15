@@ -59,6 +59,10 @@ For the R7 you find the firmware on the Cannon Web page at
 
 * https://www.usa.canon.com/support/p/eos-r7
 
+You will als have to sign up for the Cannon developers community and download the CCAPI extension for te camera and install it.
+
+... once I have time I write about it here ... 
+
 ## Install
 
 ```bash
