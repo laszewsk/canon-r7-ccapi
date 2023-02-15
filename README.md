@@ -5,7 +5,7 @@ This library is not just for the R7 but supports all Cannon cameras on which CCA
 ## The problem
 
 Many people noticed that the regular EOS Utility program has issues
-on some Macs. This happens only via WiFi. The USB connection works fine.
+on M1/M2 Macs. This happens only via WiFi. The USB connection works fine.
 However, we like to be able to access the Cannon cameras via WiFi read-on.
 Furthermore, not all features are supported on Android apps interfacing with 
 the canon camera so this is unfortunately yet not an option.
