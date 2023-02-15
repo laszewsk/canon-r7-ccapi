@@ -1,5 +1,7 @@
 # canon-r7-ccapi
 
+This library is not just for the R7 but supports all Cannon cameras on which CCAPI is supported. 
+
 ## The problem
 
 Many people noticed that the regular EOS Utility program has issues
