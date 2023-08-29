@@ -39,7 +39,6 @@ class CCAPI:
     # http://<IP>:8080/ccapi
     # /ver100/functions/beep
     # /ver100/functions/displayoff
-    # /ver100/functions/autopoweroff
     # /ver100/functions/sensorcleaning  # button under lens
     # metering
     # drive
@@ -568,7 +567,6 @@ class CCAPI:
 
     cam = "/ccapi/ver100/shooting/liveview/rtp"
 
-
     def cam_start(self):
         r = self._post(path=self.cam,
                        json={"action": "start",
@@ -580,7 +578,6 @@ class CCAPI:
                        json={"action": "stop",
                              "ipaddress": "rtsp://192.168.50.10:8554/camera"
                              })
-
 
     def cam_view(self, location=None):
 
@@ -665,7 +662,6 @@ class CCAPI:
                 shutil.copyfileobj(response.raw, out_file)
         return response
 
-
     def get_liveview_image(self, name):
         """
         Downloads he liveview image and puts it in the file with the given names
@@ -677,7 +673,6 @@ class CCAPI:
 
         url = "http://192.168.50.210:8080/ccapi/ver100/shooting/liveview/flipdetail?kind=image"
         url = "http://192.168.50.210:8080/ccapi/ver100/shooting/liveview/flip"
-
 
         response = requests.get(url, stream=True)
         with open(name, 'wb') as out_file:
@@ -693,17 +688,17 @@ class CCAPI:
             print("previe for this OS not yet supported")
 
     # def get_cardformat(self):
-    #     # only supported for PowerSHot cameras
+    #     # only supported for PowerShot cameras
     #     r = self._get(path="/ccapi/ver100/functions/cardformat")
     #     return r
 
     def get_zoom(self):
-        # only supported for PowerSHot cameras
+        # only supported for PowerShot cameras
         r = self._get(path="/ccapi/ver100/shooting/control/zoom")
         return r
 
     def get_shootingmodedial(self):
-        # only supported for PowerSHot cameras
+        # only supported for PowerShot cameras
         r = self._get(path="/ccapi/ver100/shooting/settings/shootingmodedial").json()
         return r
 
@@ -715,6 +710,40 @@ class CCAPI:
     @shootingmodedial.setter
     def shootingmodedial(self, value):
         r = self.set_settings_value(key="shootingmodedial", value=value)
+        return r
+
+    def set_value(self, path=None, value=None):
+        # old = self.settings[version][key]["value"]
+        r = self._get(path=path).json()
+        ability = r["ability"]
+        if value in ability:
+            result = value
+            r = self._put(path=path,
+                          json={"value": value})
+        else:
+            print("failed")
+            result = old
+
+        return result
+
+    def get_autopoweroff(self):
+        """
+        The chare level as integer (0-100)
+        :return:
+        :rtype:
+        """
+        r = self._get(path="/ccapi/ver100/functions/autopoweroff").json()
+        return r
+
+    @property
+    def autopoweroff(self):
+        r = self.get_autopoweroff()["value"]
+        return r
+
+    @autopoweroff.setter
+    def autopoweroff(self, value):
+        r = self.set_value(path="/ccapi/ver100/functions/autopoweroff",
+                           value=value)
         return r
 
     def autofocus(self, on):

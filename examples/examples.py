@@ -9,7 +9,6 @@ camera = CCAPI()
 r = camera.ccapi(output="github")
 print(r)
 
-
 #
 # Prints the CCAPI in github markdown format
 #
@@ -20,7 +19,7 @@ print(r)
 # Prints the CCAPI in ASCII table format
 #
 r = camera.ccapi(output="table")
-print (r)
+print(r)
 
 # Demonstrates setting the author
 #
@@ -51,7 +50,7 @@ print(r)
 # Gets the battery level
 #
 r = camera.charge
-print (r)
+print(r)
 
 #
 # Gets the settings form the camera as json object.
@@ -59,7 +58,7 @@ print (r)
 # This file can then be used to probe the values without constantly probing the camers
 
 r = camera.settings()
-pprint (r)
+pprint(r)
 
 #
 # Lists the contents of the images on the sd cards
@@ -90,21 +89,21 @@ beep()
 #
 
 #
-# Prints if focus bracekting is enabled
+# Prints if focus bracketing is enabled
 #
-print (camera.focusbracketing)
+print(camera.focusbracketing)
 
 #
 # Enables focus bracketing
 #
 camera.focusbracketing = True
-print (camera.focusbracketing)
+print(camera.focusbracketing)
 
 #
 # Enables exposure smoothing
 #
 camera.exposuresmoothing = True
-print (camera.exposuresmoothing)
+print(camera.exposuresmoothing)
 
 #
 # sets the number of shots for focus bracketing
@@ -117,7 +116,7 @@ print(camera.numberofshots)
 #
 
 camera.focusincrement = 4
-print (camera.focusincrement)
+print(camera.focusincrement)
 
 #
 # returns information about the storage
@@ -149,4 +148,3 @@ print(camera.get_storage())
 # r = camera.shoot_control(af=True, action="release")
 # r = camera.shoot_control(af=True, action="half_press")
 # r = camera.focus()
-

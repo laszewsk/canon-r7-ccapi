@@ -29,11 +29,10 @@ st.set_page_config(
 )
 
 # tab_preview, tab_general, tab_focusbracketing, tab_video = \
-#     st.tabs(["Preview", "Settings", "Focusbraceting", "Video"])
+#     st.tabs(["Preview", "Settings", "Focusbracketing", "Video"])
 
 tab_preview, tab_general, tab_focusbracketing = \
-    st.tabs(["Preview", "Settings", "Focusbraceting"])
-
+    st.tabs(["Preview", "Settings", "Focusbracketing"])
 
 st.session_state.image_available = False
 
@@ -73,7 +72,8 @@ def preview_stream(position=tab_preview):
             area.write("error loading preview")
             area.write(e)
         print("preview")
-    print ("stream done")
+    print("stream done")
+
 
 def preview_image(position=tab_preview):
     camera = CCAPI()
@@ -84,7 +84,7 @@ def preview_image(position=tab_preview):
 
     r = camera.liveview(display="on", size="medium")
 
-    for i in range(1): # for some reason it does not work for more
+    for i in range(1):  # for some reason it does not work for more
         try:
             r = camera.get_liveview_image(name)
             image = Image.open('./preview.jpeg')
@@ -201,14 +201,13 @@ st.sidebar.button("Preview Stream from :camera:", on_click=preview_stream)
 
 st.sidebar.button("Create Stack :camera: ... :camera:", on_click=stack)
 
-
 tab_focusbracketing.markdown("# Focusbracketing")
 for label, key in [("Focusbracketing", "focusbracketing")]:
     values[key] = generate_selectbox(position=tab_focusbracketing, label=label, key=key)
 
 for label, key in [("Number of shots", "focusbracketing_numberofshots"),
                    ("Focus increment", "focusbracketing_focusincrement")]:
-    values[key] = generate_slider(position=tab_focusbracketing,label=label, key=key)
+    values[key] = generate_slider(position=tab_focusbracketing, label=label, key=key)
 
 tab_general.markdown("# General")
 
@@ -222,9 +221,8 @@ for key in ["iso",
             "afmethod"
             # ("exposure", "ver100")
             ]:
-    values[key] = generate_selectbox(position=tab_general,label=key, key=key)
+    values[key] = generate_selectbox(position=tab_general, label=key, key=key)
 st.session_state.camera_values = values
-
 
 #
 # tab_video.markdown("# Video")
